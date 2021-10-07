@@ -42,6 +42,7 @@ def collect(query,n=20,verbose=False):
     results['total']=len(snippets)
     print(results)
 
+#Scholar    
 
 def scholar_(query,n=20,verbose=False):
     driver.get('https://scholar.google.com.mx/')
@@ -97,12 +98,8 @@ def scholar_(query,n=20,verbose=False):
 def scholar(query,n=20,verbose=False):
     scholar_(query,n,verbose)
 
+#researchgate
 
-
-@cli.command(help='Search on the researchgate engine')
-@click.option('-n', default=20, help='number of results ')
-@click.option('--verbose', type=bool, default=False, help='Verbise')
-@click.argument('query')
 def researchgate_(query,n=20,verbose=False):
     driver.get('https://www.researchgate.net/')
     search_box = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CLASS_NAME, "header-search-action")))
@@ -138,6 +135,8 @@ def researchgate_(query,n=20,verbose=False):
 
 def researchgate(query,n=20,verbose=False):
     duckduck_(query,n,verbose)
+
+#duckduck
 
 def duckduck_(query,n=20,verbose=False):
     driver.get('https://duckduckgo.com/')
@@ -182,6 +181,62 @@ def duckduck_(query,n=20,verbose=False):
 @click.argument('query')
 def duckduck(query,n=20,verbose=False):
     duckduck_(query,n,verbose)
+  
+#Bing  
+  
+def bing_(query,n=20,verbose=False):
+    driver.get('https://www.bing.com/?setlang=es')
+    search_box = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.NAME, "q")))
+    search_box.send_keys(query)
+    search_box.submit()
+
+    elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//li[contains(@class,'b_algo')]")))
+    n_=len(elements)
+    snippets=[]
+    position=0
+    while n_<n:
+        for ele in elements:
+            html=ele.get_attribute("outerHTML")
+            soup = BeautifulSoup(html,  "html.parser")
+            #soup=BeautifulSoup(html, 'lxml')
+            a=soup.find_all("a")[0]
+            title=a.text
+            href=a['href']
+            snippet=soup.find_all("div", class_="b_snippet")[0]
+            snippets.append((position,title,href,snippet.text))
+            position+=1
+        try:
+            next_page = driver.find_element_by_xpath("//li[@id='b_pag']//table//tr//td[last()]//a")
+            href=next_page.get_attribute('href')
+            driver.get(href)
+            elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[contains(@class,'b_algo')]")))
+            n_+=len(elements)
+        except TimeoutException as e:
+            break
+
+    for ele in elements:
+        html=ele.get_attribute("outerHTML")
+        soup = BeautifulSoup(html,  "html.parser")
+        #soup=BeautifulSoup(html, 'lxml')
+        a=soup.find_all("a")[0]
+        title=a.text
+        href=a['href']
+        try:
+            snippet=soup.find_all("div", class_="gs_rs")[0].text
+        except IndexError:
+            snippet=""
+        snippets.append({"position":position,"title":title,"href":href,"text":snippet})
+        position+=1
+
+    print(snippets,query,n)
+    return snippets
+   
+@cli.command(help='Search on the google scholar enginee')
+@click.option('-n', default=20, help='number of results ')
+@click.option('--verbose', type=bool, default=False, help='Verbise')
+@click.argument('query')
+def bing(query,n=20,verbose=False):
+    bing_(query,n,verbose)
 
 if __name__ == '__main__':
     cli()
