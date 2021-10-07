@@ -100,7 +100,7 @@ def scholar_(query,name,n=20,verbose=False):
         position+=1
 
     #print(snippets,query,n)
-    exportar(snippets)
+    exportar(snippets,name)
     return snippets
     
 def bing_(query,name,n=20,verbose=False):
@@ -148,7 +148,7 @@ def bing_(query,name,n=20,verbose=False):
         position+=1
 
     #print(snippets,query,n)
-    exportar(snippets)
+    exportar(snippets,name)
     return snippets
     
 @cli.command(help='Search on the google scholar enginee')
@@ -221,7 +221,7 @@ def researchgate_(query,name,n=20,verbose=False):
         position+=1
 
     #print(snippets,query,n)
-    exportar(snippets)
+    exportar(snippets,name)
     return snippets
     
 @cli.command(help='Search on the researchgate engine')
@@ -266,7 +266,7 @@ def duckduck_(query,name,n=20,verbose=False):
 
     snippets=snippets[:n]
     #print(snippets,query,n)
-    exportar(snippets)
+    exportar(snippets,name)
 
     return snippets
 
