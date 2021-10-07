@@ -22,7 +22,7 @@ def cli():
 #Datos
 
 def exportar(results,name,path=save_path):
-    with open('results.json', 'w') as file:
+    with open(name+'.json', 'w') as file:
         json.dump(results, file, indent=4)
     
     dataf=pd.DataFrame.from_dict(results)
