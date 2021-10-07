@@ -21,12 +21,12 @@ def cli():
 
 #Datos
 
-def exportar(results,path=save_path):
+def exportar(results,path=save_path,name):
     with open('results.json', 'w') as file:
         json.dump(results, file, indent=4)
     
     dataf=pd.DataFrame.from_dict(results)
-    dataf.to_csv(path+'results.csv',index=False)
+    dataf.to_csv(path+name+'.csv',index=False)
 
 
 @cli.command(help='The number of items to process.')
@@ -39,7 +39,8 @@ def engines():
 @click.option('-n', default=20, help='number of results')
 @click.option('--verbose', type=bool, default=False, help='Verbise')
 @click.argument('query')
-def collect(query,n=20,verbose=False):
+@click.argument('name')
+def collect(query,n=20,verbose=False,name):
     results={}
     print("scholar")
     results["scholar"]={}
@@ -54,7 +55,7 @@ def collect(query,n=20,verbose=False):
     print(results)
 
 
-def scholar_(query,n=20,verbose=False):
+def scholar_(query,n=20,verbose=False,name):
     driver.get('https://scholar.google.com.mx/')
     search_box = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.NAME, "q")))
     search_box.send_keys(query)
@@ -102,7 +103,7 @@ def scholar_(query,n=20,verbose=False):
     exportar(snippets)
     return snippets
     
-def bing_(query,n=20,verbose=False):
+def bing_(query,n=20,verbose=False,name):
     driver.get('https://www.bing.com/?setlang=es')
     search_box = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.NAME, "q")))
     search_box.send_keys(query)
@@ -154,7 +155,8 @@ def bing_(query,n=20,verbose=False):
 @click.option('-n', default=20, help='number of results ')
 @click.option('--verbose', type=bool, default=False, help='Verbise')
 @click.argument('query')
-def bing(query,n=20,verbose=False):
+@click.argument('name')
+def bing(query,n=20,verbose=False,name):
     bing_(query,n,verbose)
 
 
@@ -164,12 +166,13 @@ def bing(query,n=20,verbose=False):
 @click.option('-n', default=20, help='number of results ')
 @click.option('--verbose', type=bool, default=False, help='Verbise')
 @click.argument('query')
-def scholar(query,n=20,verbose=False):
+@click.argument('name')
+def scholar(query,n=20,verbose=False,name):
     scholar_(query,n,verbose)
 
 
 
-def researchgate_(query,n=20,verbose=False):
+def researchgate_(query,n=20,verbose=False,name):
     driver.get('https://www.researchgate.net/')
     search_box = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CLASS_NAME,"index-search-field__input")))
     search_box.send_keys(query)
@@ -225,11 +228,12 @@ def researchgate_(query,n=20,verbose=False):
 @click.option('-n', default=20, help='number of results ')
 @click.option('--verbose', type=bool, default=False, help='Verbise')
 @click.argument('query')
+@click.argument('name')
 
-def researchgate(query,n=20,verbose=False):
+def researchgate(query,n=20,verbose=False,name):
     researchgate_(query,n,verbose)
 
-def duckduck_(query,n=20,verbose=False):
+def duckduck_(query,n=20,verbose=False,name):
     driver.get('https://duckduckgo.com/')
     search_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.NAME, "q")))
     search_box.send_keys(query)
@@ -272,7 +276,8 @@ def duckduck_(query,n=20,verbose=False):
 @click.option('-n', default=20, help='number of results ')
 @click.option('--verbose', type=bool, default=False, help='Verbise')
 @click.argument('query')
-def duckduck(query,n=20,verbose=False):
+@click.argument('name')
+def duckduck(query,n=20,verbose=False,name):
     duckduck_(query,n,verbose)
     
 
