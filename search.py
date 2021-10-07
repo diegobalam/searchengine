@@ -33,6 +33,8 @@ def exportar(results,name,path=save_path):
 def engines():
     print("duckduck")
     print("scholar")
+    print("bing")
+    print("researchgate")
 
 
 @cli.command(help='Collect all search enginees')
