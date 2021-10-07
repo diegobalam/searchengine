@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import json
 import pandas as pd
 
-save_path='/home/balam/balam/Fake_news/data/'
+save_path='/home/balam/balam/searchengine/data/'
 options = webdriver.FirefoxOptions()
 options.add_argument('-headless')
  
