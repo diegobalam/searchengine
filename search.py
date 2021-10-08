@@ -172,6 +172,61 @@ def bing(query,name,n=20,verbose=False):
 def scholar(query,name,n=20,verbose=False):
     scholar_(query,name,n,verbose)
 
+  def yahoo_(query,name,n=20,verbose=False):
+    driver.get('https://news.yahoo.com/')
+    search_box = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.NAME, "p")))
+    search_box.send_keys(query)
+    search_box.submit()
+
+    elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[contains(@class,'dd NewsArticle')]")))
+    n_=len(elements)
+    snippets=[]
+    position=0
+    while n_<n:
+        for ele in elements:
+            html=ele.get_attribute("outerHTML")
+            soup = BeautifulSoup(html,  "html.parser")
+            #soup=BeautifulSoup(html, 'lxml')
+            a=soup.find_all("a")[0]
+            title=a.text
+            href=a['href']
+            snippet=soup.find_all("div", class_="s-desc")[0]
+            snippets.append((position,title,href,snippet.text))
+            position+=1
+        try:
+            next_page = driver.find_element_by_xpath("//div[@id='yui_3_10_0_1_1633677118333_40']//a[@class='next')
+            href=next_page.get_attribute('href')
+            driver.get(href)
+            elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[contains(@class,'dd NewsArticle')]")))
+            n_+=len(elements)
+        except TimeoutException as e:
+            break
+
+    for ele in elements:
+        html=ele.get_attribute("outerHTML")
+        soup = BeautifulSoup(html,  "html.parser")
+        #soup=BeautifulSoup(html, 'lxml')
+        a=soup.find_all("a")[0]
+        title=a.text
+        href=a['href']
+        try:
+            snippet=soup.find_all("div", class_="s-desc")[0].text
+        except IndexError:
+            snippet=""
+        snippets.append({"position":position,"title":title,"href":href,"text":snippet})
+        position+=1
+
+    #print(snippets,query,n)
+    exportar(snippets,name)
+    return snippets
+                                                     
+@cli.command(help='Search on the google scholar enginee')
+@click.option('-n', default=20, help='number of results ')
+@click.option('--verbose', type=bool, default=False, help='Verbise')
+@click.argument('query')
+@click.argument('name')
+def yahoo(query,name,n=20,verbose=False):
+    yahoo_(query,name,n,verbose)
 
 
 def researchgate_(query,name,n=20,verbose=False):
