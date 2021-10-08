@@ -194,7 +194,7 @@ def yahoo_(query,name,n=20,verbose=False):
             snippets.append((position,title,href,snippet.text))
             position+=1
         try:
-            next_page = driver.find_element_by_xpath("//div[@id='yui_3_10_0_1_1633677118333_40']//a[@class='next')
+            next_page = driver.find_element_by_xpath("//div[@id='yui_3_10_0_1_1633677118333_40']//a[@class='next']")
             href=next_page.get_attribute('href')
             driver.get(href)
             elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[contains(@class,'dd NewsArticle')]")))
