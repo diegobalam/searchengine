@@ -172,7 +172,7 @@ def bing(query,name,n=20,verbose=False):
 def scholar(query,name,n=20,verbose=False):
     scholar_(query,name,n,verbose)
 
-  def yahoo_(query,name,n=20,verbose=False):
+def yahoo_(query,name,n=20,verbose=False):
     driver.get('https://news.yahoo.com/')
     search_box = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.NAME, "p")))
     search_box.send_keys(query)
