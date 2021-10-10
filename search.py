@@ -232,12 +232,9 @@ def researchgate_(query,name,n=20,verbose=False):
     driver.get('https://www.researchgate.net/')
     search_box = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CLASS_NAME,"index-search-field__input")))
     search_box.send_keys(query)
-    print(1)
     search_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.CLASS_NAME,"nova-legacy-e-icon.nova-legacy-e-icon--size-s.nova-legacy-e-icon--theme-bare.nova-legacy-e-icon--color-grey.nova-legacy-e-icon--luminosity-medium")))
-    print(2)
     search_box.click()
-    print(3)
-     
+         
     elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[contains(@class,'nova-legacy-o-stack__item')]")))
     n_=len(elements)
     snippets=[]
@@ -254,7 +251,7 @@ def researchgate_(query,name,n=20,verbose=False):
             snippets.append((position,title,href,snippet.text))
             position+=1
         try:
-            next_page = driver.find_element_by_xpath("//div[@id='nova-legacy-c-button-group nova-legacy-c-button-group--wrap nova-legacy-c-button-group--gutter-none nova-legacy-c-button-group--orientation-horizontal nova-legacy-c-button-group--width-full mustache-pager']//table//tr//td[last()]//a")
+            search_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.CLASS_NAME,"nova-legacy-c-button.nova-legacy-c-button--align-center.nova-legacy-c-button--radius-m.nova-legacy-c-button--size-s.nova-legacy-c-button--color-grey.nova-legacy-c-button--theme-bare.nova-legacy-c-button--width-full")))
             href=next_page.get_attribute('href')
             driver.get(href)
             elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[contains(@class,'nova-legacy-o-stack__item')]")))
