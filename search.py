@@ -79,7 +79,7 @@ def scholar_(query,name,n=20,verbose=False):
             snippets.append((position,title,href,snippet.text))
             position+=1
         try:
-            next_page = driver.find_element_by_xpath("//div[@class='gs_n']//table//tr//td[last()]//a")
+            next_page = driver.find_element_by_xpath("//div[@id='gs_n']//table//tr//td[last()]//a")
             href=next_page.get_attribute('href')
             driver.get(href)
             elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[contains(@class,'gs_ri')]")))
