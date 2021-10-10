@@ -113,7 +113,7 @@ def bing_(query,name,n=20,verbose=False):
 
     elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//li[contains(@class,'b_algo')]")))
     n_=len(elements)
-    snippets=[]
+    snippets=[] 
     position=0
     while n_<n:
         for ele in elements:
@@ -123,14 +123,14 @@ def bing_(query,name,n=20,verbose=False):
             a=soup.find_all("a")[0]
             title=a.text
             href=a['href']
-            snippet=soup.find_all("div", class_="b_snippet")[0]
+            snippet=soup.find_all("div", class_="b_caption")[0]
             snippets.append((position,title,href,snippet.text))
             position+=1
         try:
-            next_page = driver.find_element_by_xpath("//li[@id='b_pag']//table//tr//td[last()]//a//b")
+            next_page = driver.find_element_by_class_name("sb_pagN.sb_pagN_bp.b_widePag.sb_bp")
             href=next_page.get_attribute('href')
             driver.get(href)
-            elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[contains(@class,'b_algo')]")))
+            elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//li[contains(@class,'b_algo')]")))
             n_+=len(elements)
         except TimeoutException as e:
             break
@@ -143,12 +143,11 @@ def bing_(query,name,n=20,verbose=False):
         title=a.text
         href=a['href']
         try:
-            snippet=soup.find_all("div", class_="gs_rs")[0].text
+            snippet=soup.find_all("div", class_="b_caption")[0].text
         except IndexError:
             snippet=""
         snippets.append({"position":position,"title":title,"href":href,"text":snippet})
         position+=1
-
     #print(snippets,query,n)
     exportar(snippets,name)
     return snippets
