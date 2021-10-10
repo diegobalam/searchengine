@@ -190,11 +190,11 @@ def yahoo_(query,name,n=20,verbose=False):
             a=soup.find_all("a")[0]
             title=a.text
             href=a['href']
-            snippet=soup.find_all("div", class_="s-desc")[0]
+            snippet=soup.find_all("p", class_="s-desc")[0]
             snippets.append((position,title,href,snippet.text))
             position+=1
         try:
-            next_page = driver.find_element_by_xpath("//div[@id='yui_3_10_0_1_1633677118333_40']//a[@class='next']")
+            next_page = driver.find_element_by_class_name("next")
             href=next_page.get_attribute('href')
             driver.get(href)
             elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[contains(@class,'dd NewsArticle')]")))
@@ -210,7 +210,7 @@ def yahoo_(query,name,n=20,verbose=False):
         title=a.text
         href=a['href']
         try:
-            snippet=soup.find_all("div", class_="s-desc")[0].text
+            snippet=soup.find_all("p", class_="s-desc")[0].text
         except IndexError:
             snippet=""
         snippets.append({"position":position,"title":title,"href":href,"text":snippet})
