@@ -95,6 +95,8 @@ def scholar_(query,name,n=20,verbose=False):
             snippet=soup.find_all("div", class_="gs_rs")[0]
             snippets.append((position,title,href,snippet.text))
             position+=1
+            if cont==n:
+                break
         try:
             next_page = driver.find_element_by_xpath("//div[@id='gs_n']//table//tr//td[last()]//a")
             href=next_page.get_attribute('href')
@@ -143,6 +145,8 @@ def bing_(query,name,n=20,verbose=False):
             snippet=soup.find_all("div", class_="b_caption")[0]
             snippets.append((position,title,href,snippet.text))
             position+=1
+            if cont==n:
+                break
         try:
             next_page = driver.find_element_by_class_name("sb_pagN.sb_pagN_bp.b_widePag.sb_bp")
             href=next_page.get_attribute('href')
@@ -209,6 +213,8 @@ def yahoo_(query,name,n=20,verbose=False):
             snippet=soup.find_all("p", class_="s-desc")[0]
             snippets.append((position,title,href,snippet.text))
             position+=1
+            if cont==n:
+                break
         try:
             next_page = driver.find_element_by_class_name("next")
             href=next_page.get_attribute('href')
@@ -267,6 +273,8 @@ def researchgate_(query,name,n=20,verbose=False):
             snippet=soup.find_all("div", class_="nova-legacy-o-stack__item")[0]
             snippets.append((position,title,href,snippet.text))
             position+=1
+            if cont==n:
+                break
         try:
             search_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.CLASS_NAME,"nova-legacy-c-button.nova-legacy-c-button--align-center.nova-legacy-c-button--radius-m.nova-legacy-c-button--size-s.nova-legacy-c-button--color-grey.nova-legacy-c-button--theme-bare.nova-legacy-c-button--width-full")))
             href=next_page.get_attribute('href')
