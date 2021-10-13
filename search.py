@@ -357,6 +357,28 @@ def duckduck_(query,name,n=20,verbose=False):
 @click.argument('name')
 def duckduck(query,name,n=20,verbose=False):
     duckduck_(query,name,n,verbose)
+  
+def base_(archivo,buscador,name,n=20):
+    with open(archivo) as file:
+    data = json.load(file)
+    base={}
+    for elem in data[0]:
+        cont+=1
+        base[cont]={}
+        snippets=buscador_(query,n,verbose)
+        results[cont]['results']=snippets
+    with open(name+'.json', 'w') as file:
+        json.dump(results, file, indent=4)
+   
+   return data
+   
+@cli.command(help='Search on the data engine')
+@click.option('-n', default=20, help='number of results ')
+@click.argument('query')
+@click.argument('buscador')
+@click.argument('name')
+def basea(archivo,buscador,name,n=20):
+    base_(archivo,buscador,name,n=20)     
     
 
 
