@@ -47,14 +47,31 @@ def collect(query,name,n=20,verbose=False):
     print("scholar")
     results["scholar"]={}
     snippets=scholar_(query,n,verbose)
-    results['results']=snippets
-    results['total']=len(snippets)
+    results["scholar"]['results']=snippets
+    results["scholar"]['total']=len(snippets)
     print("duckduck")
     results["duckduck"]={}
-    snippets=[]
-    results['results']=snippets
-    results['total']=len(snippets)
+    snippets=duckduck_(query,n,verbose)
+    results["duckduck"]['results']=snippets
+    results["duckduck"]['total']=len(snippets)
+    print("bing")
+    results["bing"]={}
+    snippets=bing_(query,n,verbose)
+    results["bing"]['results']=snippets
+    results["bing"]['total']=len(snippets)
+    print("yahoo")
+    results["yahoo"]={}
+    snippets=yahoo_(query,n,verbose)
+    results["yahoo"]['results']=snippets
+    results["yahoo"]['total']=len(snippets)
+    print("researchgate")
+    results["researchgate"]={}
+    snippets=researchgate_(query,n,verbose)
+    results["researchgate"]['results']=snippets
+    results["researchgate"]['total']=len(snippets)
     print(results)
+    with open(name+'.json', 'w') as file:
+        json.dump(results, file, indent=4)
 
 
 def scholar_(query,name,n=20,verbose=False):
