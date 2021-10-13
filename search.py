@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import json
 import pandas as pd
 
-save_path='/home/balam/balam/searchengine/data/'
+save_path='/home/diegobalam/Fake_news/searchengine/data/'
 options = webdriver.FirefoxOptions()
 options.add_argument('-headless')
  
@@ -46,27 +46,27 @@ def collect(query,name,n=20,verbose=False):
     results={}
     print("scholar")
     results["scholar"]={}
-    snippets=scholar_(query,n,verbose)
+    snippets=scholar_(query,name,n,verbose)
     results["scholar"]['results']=snippets
     results["scholar"]['total']=len(snippets)
     print("duckduck")
     results["duckduck"]={}
-    snippets=duckduck_(query,n,verbose)
+    snippets=duckduck_(query,name,n,verbose)
     results["duckduck"]['results']=snippets
     results["duckduck"]['total']=len(snippets)
     print("bing")
     results["bing"]={}
-    snippets=bing_(query,n,verbose)
+    snippets=bing_(query,name,n,verbose)
     results["bing"]['results']=snippets
     results["bing"]['total']=len(snippets)
     print("yahoo")
     results["yahoo"]={}
-    snippets=yahoo_(query,n,verbose)
+    snippets=yahoo_(query,name,n,verbose)
     results["yahoo"]['results']=snippets
     results["yahoo"]['total']=len(snippets)
     print("researchgate")
     results["researchgate"]={}
-    snippets=researchgate_(query,n,verbose)
+    snippets=researchgate_(query,name,n,verbose)
     results["researchgate"]['results']=snippets
     results["researchgate"]['total']=len(snippets)
     print(results)
@@ -94,9 +94,10 @@ def scholar_(query,name,n=20,verbose=False):
             href=a['href']
             snippet=soup.find_all("div", class_="gs_rs")[0]
             snippets.append((position,title,href,snippet.text))
-            position+=1
-            if cont==n:
+            if position==n-1:
                 break
+            position+=1
+           
         try:
             next_page = driver.find_element_by_xpath("//div[@id='gs_n']//table//tr//td[last()]//a")
             href=next_page.get_attribute('href')
@@ -118,6 +119,8 @@ def scholar_(query,name,n=20,verbose=False):
         except IndexError:
             snippet=""
         snippets.append({"position":position,"title":title,"href":href,"text":snippet})
+        if position==n-1:
+                break
         position+=1
 
     #print(snippets,query,n)
@@ -142,11 +145,16 @@ def bing_(query,name,n=20,verbose=False):
             a=soup.find_all("a")[0]
             title=a.text
             href=a['href']
-            snippet=soup.find_all("div", class_="b_caption")[0]
-            snippets.append((position,title,href,snippet.text))
-            position+=1
-            if cont==n:
+            #snippet=soup.find_all("div", class_="b_caption")[0]
+            #snippets.append((position,title,href,snippet.text))
+            try:
+                snippet=soup.find_all("div", class_="b_caption")[0].text
+            except IndexError:
+                snippet=""
+            snippets.append({"position":position,"title":title,"href":href,"text":snippet})
+            if position==n-1:
                 break
+            position+=1
         try:
             next_page = driver.find_element_by_class_name("sb_pagN.sb_pagN_bp.b_widePag.sb_bp")
             href=next_page.get_attribute('href')
@@ -168,6 +176,8 @@ def bing_(query,name,n=20,verbose=False):
         except IndexError:
             snippet=""
         snippets.append({"position":position,"title":title,"href":href,"text":snippet})
+        if position==n-1:
+                break
         position+=1
     #print(snippets,query,n)
     exportar(snippets,name)
@@ -212,9 +222,10 @@ def yahoo_(query,name,n=20,verbose=False):
             href=a['href']
             snippet=soup.find_all("p", class_="s-desc")[0]
             snippets.append((position,title,href,snippet.text))
-            position+=1
-            if cont==n:
+            if position==n-1:
                 break
+            position+=1
+            
         try:
             next_page = driver.find_element_by_class_name("next")
             href=next_page.get_attribute('href')
@@ -236,6 +247,8 @@ def yahoo_(query,name,n=20,verbose=False):
         except IndexError:
             snippet=""
         snippets.append({"position":position,"title":title,"href":href,"text":snippet})
+        if position==n-1:
+                break
         position+=1
 
     #print(snippets,query,n)
@@ -272,9 +285,10 @@ def researchgate_(query,name,n=20,verbose=False):
             href=a['href']
             snippet=soup.find_all("div", class_="nova-legacy-o-stack__item")[0]
             snippets.append((position,title,href,snippet.text))
-            position+=1
-            if cont==n:
+            if position==n-1:
                 break
+            position+=1
+            
         try:
             search_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.CLASS_NAME,"nova-legacy-c-button.nova-legacy-c-button--align-center.nova-legacy-c-button--radius-m.nova-legacy-c-button--size-s.nova-legacy-c-button--color-grey.nova-legacy-c-button--theme-bare.nova-legacy-c-button--width-full")))
             href=next_page.get_attribute('href')
@@ -296,6 +310,8 @@ def researchgate_(query,name,n=20,verbose=False):
         except IndexError:
             snippet=""
         snippets.append({"position":position,"title":title,"href":href,"text":snippet})
+        if position==n-1:
+                break
         position+=1
 
     #print(snippets,query,n)
@@ -360,7 +376,7 @@ def duckduck(query,name,n=20,verbose=False):
   
 def base_(archivo,buscador,name,n=20):
     with open(archivo) as file:
-        data = json.load(file)
+    	data = json.load(file)
     base={}
     for elem in data[0]:
         cont+=1
