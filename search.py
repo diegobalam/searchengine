@@ -7,6 +7,8 @@ from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 import json
 import pandas as pd
+import os.path
+import pandas as pd
 
 save_path='/home/diegobalam/Fake_news/searchengine/data/'
 options = webdriver.FirefoxOptions()
@@ -375,25 +377,34 @@ def duckduck(query,name,n=20,verbose=False):
     duckduck_(query,name,n,verbose)
   
 def base_(archivo,buscador,name,n=20):
-    with open(archivo) as file:
-    	data = json.load(file)
+    extension = os.path.splitext(archivo)
+    if extension=='.json':
+      with open(archivo) as file:
+    	   data = json.load(file)
+    if extension=='.csv':
+      data= pd.read_csv (archivo) 
+    if extension=='.xlsx':
+      data= pd.read_excel (archivo) 
     base={}
-    for elem in data[0]:
-        cont+=1
+    cont=0
+    for i in range(0,len(data)):
         base[cont]={}
+        query=data['query'][i]
+        base[cont]['query']=query
         snippets=buscador_(query,n,verbose)
         results[cont]['results']=snippets
+        cont+=1
     with open(name+'.json', 'w') as file:
-        json.dump(results, file, indent=4)
+        json.dump(base, file, indent=4)
    
-    return data
+    return base
    
 @cli.command(help='Search on the data engine')
 @click.option('-n', default=20, help='number of results ')
 @click.argument('query')
 @click.argument('buscador')
 @click.argument('name')
-def basea(archivo,buscador,name,n=20):
+def base(archivo,buscador,name,n=20):
     base_(archivo,buscador,name,n=20)     
     
 
