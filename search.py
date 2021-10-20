@@ -147,10 +147,10 @@ def bing_(query,name,n=20,verbose=False):
             a=soup.find_all("a")[0]
             title=a.text
             href=a['href']
-            #snippet=soup.find_all("div", class_="b_caption")[0]
+            #snippet=soup.find_all("p")[0]
             #snippets.append((position,title,href,snippet.text))
             try:
-                snippet=soup.find_all("div", class_="b_caption")[0].text
+                snippet=soup.find_all("p")[0].text
             except IndexError:
                 snippet=""
             snippets.append({"position":position,"title":title,"href":href,"text":snippet})
@@ -174,7 +174,7 @@ def bing_(query,name,n=20,verbose=False):
         title=a.text
         href=a['href']
         try:
-            snippet=soup.find_all("div", class_="b_caption")[0].text
+            snippet=soup.find_all("p")[0].text
         except IndexError:
             snippet=""
         snippets.append({"position":position,"title":title,"href":href,"text":snippet})
