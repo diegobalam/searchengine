@@ -389,10 +389,10 @@ def base_(archivo,buscador,name,n=20):
     cont=0
     for i in range(0,len(data)):
         base[cont]={}
-        query=data['query'][i]
+        query=data['title'][i]
         base[cont]['query']=query
-        snippets=buscador_(query,n,verbose)
-        results[cont]['results']=snippets
+        snippets=buscador(query,n,verbose)
+        base[cont]['results']=snippets
         cont+=1
     with open(name+'.json', 'w') as file:
         json.dump(base, file, indent=4)
